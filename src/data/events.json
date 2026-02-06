@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "name": "Festival international de Carthage",
+    "description": "Concerts, theatre et performances artistiques.",
+    "img": "/image/event1.jpg",
+    "price": 30,
+    "nbTickets": 10,
+    "nbParticipants": 10,
+    "like": false
+  },
+  {
+    "id": 2,
+    "name": "Festival de la medina de Tunis",
+    "description": "Nuits culturelles et rencontres musicales.",
+    "img": "/image/event2.jpg",
+    "price": 15,
+    "nbTickets": 0,
+    "nbParticipants": 34,
+    "like": true
+  },
+  {
+    "id": 3,
+    "name": "Journees cinematographiques de Carthage (JCC)",
+    "description": "Projections, debats et masterclass.",
+    "img": "/image/event3.jpg",
+    "price": 7,
+    "nbTickets": 20,
+    "nbParticipants": 35,
+    "like": false
+  }
+]
