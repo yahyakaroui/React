@@ -1,59 +1,42 @@
-import { Button, Card } from 'react-bootstrap'
+import React from 'react'
+import { Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 
-const FALLBACK_IMAGE = '/image/placeholder.jpg'
-const SOLD_OUT_IMAGE = '/image/sold_out.png'
-
-export default function Event({ event, onBook, onToggleLike, style }) {
-  const isSoldOut = event.nbTickets <= 0
-  const imageSrc = event.img || FALLBACK_IMAGE
-
+export default function Event({event, buy,toggleLike}) {
+    
   return (
-    <Card className="event-card h-100" style={style}>
-      <div className="event-image-wrapper">
-        <Card.Img
-          variant="top"
-          src={imageSrc}
-          alt={event.name}
-          className="event-image"
-        />
-        {isSoldOut && (
-          <img
-            src={SOLD_OUT_IMAGE}
-            alt="Sold out"
-            className="event-soldout"
-          />
-        )}
-      </div>
-      <Card.Body>
-        <Card.Title>{event.name}</Card.Title>
-        <Card.Text className="event-description">{event.description}</Card.Text>
-        <div className="event-meta">
-          <span className="event-price">Price : {event.price}</span>
-        </div>
-        <div className="event-meta">Number of tickets : {event.nbTickets}</div>
-        <div className="event-meta">
-          Number of participants : {event.nbParticipants}
-        </div>
-      </Card.Body>
-      <Card.Footer className="event-actions">
-        <Button
-          type="button"
-          variant={event.like ? 'secondary' : 'outline-secondary'}
-          size="sm"
-          onClick={() => onToggleLike(event.id)}
-        >
-          {event.like ? 'Dislike' : 'Like'}
-        </Button>
-        <Button
-          type="button"
-          variant="primary"
-          size="sm"
-          onClick={() => onBook(event.id)}
-          disabled={isSoldOut}
-        >
-          Book an event
-        </Button>
-      </Card.Footer>
-    </Card>
+    <>
+    <div className="card" style={{ width: "25rem" }}>
+  <img className="card-img-top" src={event.img} alt="placeholder img"></img>
+  <div className="card-body">
+    {/* quand on click sur name il affiche les details de cet  event */}
+   <Link to={`/events/${encodeURIComponent(event.name)}`} className="card-title">
+    {event.name}
+    </Link>
+    <p className="card-text">{event.price}</p>
+    <p className="card-text">tickets available: {event.nbTickets} </p>
+    <p className="card-text">Number of participants: {event.nbParticipants}</p>
+     {event.nbTickets === 0 ? (
+                        <Button disabled className="btn btn-secondary">
+                            Sold Out
+                        </Button>
+                    ) : (
+                        <Button onClick={buy} className="btn btn-primary">
+                            Book an event
+                        </Button>
+                    )}
+{/* Bouton Like/Dislike */}
+                    <Button 
+                        onClick={toggleLike} 
+                        variant={event.like ? "danger" : "info"}
+                        className="me-2"
+                    >
+                        {event.like ? "Dislike" : "Like"}
+                    </Button>
+
+                    </div>
+  </div>
+
+    </>
   )
 }

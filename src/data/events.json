@@ -1,29 +1,26 @@
 [
   {
-    "id": 1,
     "name": "Festival international de Carthage",
-    "description": "Concerts, theatre et performances artistiques.",
-    "img": "/image/event1.jpg",
+    "description": "Le lorem ipsum est, en imprimerie, une suite de mots sans signification utilisée à titre provisoire pour calibrer une mise en page",
+    "img": "../../public/images/event1.jpg",
     "price": 30,
     "nbTickets": 10,
     "nbParticipants": 10,
     "like": false
   },
   {
-    "id": 2,
-    "name": "Festival de la medina de Tunis",
-    "description": "Nuits culturelles et rencontres musicales.",
-    "img": "/image/event2.jpg",
+    "name": "Festival de la médina de Tunis",
+    "description": "Le lorem ipsum est, en imprimerie, une suite de mots sans signification utilisée à titre provisoire pour calibrer une mise en page",
+    "img": "../../public/images/event2.jpg",
     "price": 15,
-    "nbTickets": 0,
-    "nbParticipants": 34,
-    "like": true
+    "nbTickets": 4,
+    "nbParticipants": 30,
+    "like": false
   },
   {
-    "id": 3,
-    "name": "Journees cinematographiques de Carthage (JCC)",
-    "description": "Projections, debats et masterclass.",
-    "img": "/image/event3.jpg",
+    "name": "Journées cinématographiques de Carthage (JCC)",
+    "description": "Le lorem ipsum est, en imprimerie, une suite de mots sans signification utilisée à titre provisoire pour calibrer une mise en page",
+    "img": "../../public/images/event3.jpg",
     "price": 7,
     "nbTickets": 20,
     "nbParticipants": 35,

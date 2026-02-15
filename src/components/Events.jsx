@@ -1,109 +1,117 @@
-import { useEffect, useState } from 'react'
-import { Alert, Col, Container, Row } from 'react-bootstrap'
-import eventsData from '../data/events.json'
+import React, { useState , useEffect} from 'react'
 import Event from './Event'
-
-const normalizeEvent = (event, index) => ({
-  id: event.id ?? index + 1,
-  name: event.name ?? 'Event name',
-  description: event.description ?? '',
-  img: event.img ?? '/image/placeholder.jpg',
-  price: Number.isFinite(event.price) ? event.price : 0,
-  nbTickets: Number.isFinite(event.nbTickets) ? event.nbTickets : 0,
-  nbParticipants: Number.isFinite(event.nbParticipants)
-    ? event.nbParticipants
-    : 0,
-  like: Boolean(event.like),
-})
+import { Row, Col, Alert } from 'react-bootstrap'
+// importer la liste des events depuis le fichier json
+import eventsJson from '../data/events.json'
 
 export default function Events() {
-  const [events, setEvents] = useState(() =>
-    eventsData.map((event, index) => normalizeEvent(event, index)),
-  )
-  const [bookingMessage, setBookingMessage] = useState('')
-  const [showWelcome, setShowWelcome] = useState(true)
+    // État pour gérer les événements
+    const [events, setEvents] = useState(eventsJson);
+    // État pour gérer l'affichage de l'alerte
+    const [showAlert, setShowAlert] = useState(false);
+    const [bookedEventName, setBookedEventName] = useState('');
 
-  useEffect(() => {
-    const timer = setTimeout(() => setShowWelcome(false), 3000)
-    return () => clearTimeout(timer)
-  }, [])
+    // question 10
+    // État pour le message de bienvenue
+    const [showWelcome, setShowWelcome] = useState(false);
 
-  useEffect(() => {
-    if (!bookingMessage) return undefined
-    const timer = setTimeout(() => setBookingMessage(''), 2000)
-    return () => clearTimeout(timer)
-  }, [bookingMessage])
+    // useEffect pour le cycle de vie du composant
+    useEffect(() => {
+        // Montage du composant (componentDidMount)
+        console.log("Component mounted");
+        
+        // Afficher le message de bienvenue après 3 secondes
+        const welcomeTimer = setTimeout(() => {
+            setShowWelcome(true);
+            
+            // Faire disparaître le message après 3 secondes
+            setTimeout(() => {
+                setShowWelcome(false);
+            }, 3000);
+        }, 3000);
 
-  useEffect(() => {
-    console.log('Events mounted')
-    return () => console.log('Events unmounted')
-  }, [])
+        // Nettoyage (componentWillUnmount)
+        return () => {
+            console.log("Component will unmount");
+            clearTimeout(welcomeTimer);
+        };
+    }, []); // [] signifie que cet effet s'exécute uniquement au montage
 
-  useEffect(() => {
-    console.log('Events updated')
-  }, [events])
+    // useEffect pour suivre les mises à jour du composant
+    useEffect(() => {
+        console.log("Component updated - Events changed");
+    }, [events]); // S'exécute à chaque changement de events,
+    // function buy
+    const buy = (index) => {
+        // Créer une copie des événements
+        const updatedEvents = [...events];
+        
+        // Mettre à jour l'événement à l'index spécifié
+        const updatedEvent = {
+            ...updatedEvents[index],
+            nbTickets: updatedEvents[index].nbTickets - 1,
+            nbParticipants: updatedEvents[index].nbParticipants + 1
+        };
+        
+        updatedEvents[index] = updatedEvent;
+        if(updatedEvent.nbTickets === 0) {
+          // Si plus de tickets disponibles, on peut désactiver le bouton d'achat ou afficher un message
+          console.log("No more tickets available for this event.");
+          // désactiver le bouton d'achat ou afficher un message d'indisponibilité
 
-  const handleBook = (eventId) => {
-    let booked = false
-
-    setEvents((current) =>
-      current.map((event) => {
-        if (event.id !== eventId) return event
-        if (event.nbTickets <= 0) return event
-        booked = true
-        return {
-          ...event,
-          nbTickets: event.nbTickets - 1,
-          nbParticipants: event.nbParticipants + 1,
         }
-      }),
-    )
+        console.log("Event booked:", updatedEvent);
+        
+        // Mettre à jour le state
+        setEvents(updatedEvents);
+        setBookedEventName(updatedEvent.name);
+        setShowAlert(true);
+        
+        // Le msg doit disparaître après 3 secondes
+        setTimeout(() => {
+            setShowAlert(false);
+        }, 2000);
+    };
 
-    if (booked) {
-      setBookingMessage('You have booked an event')
-    }
-  }
+    // function toggleLike - Nouvelle fonction pour gérer Like/Dislike
+    const toggleLike = (index) => {
+        const updatedEvents = [...events];
+        updatedEvents[index] = {
+            ...updatedEvents[index],
+            like: !updatedEvents[index].like
+        };
+        setEvents(updatedEvents);
+    };
+    return (
+        <>
+            <div>
+              {/* Message de bienvenue */}
+                {showWelcome && (
+                    <Alert variant="info" onClose={() => setShowWelcome(false)} dismissible>
+                        Hey welcome to Esprit Events
+                    </Alert>
+                )}
+                <h2>Events List:</h2>
 
-  const handleToggleLike = (eventId) => {
-    setEvents((current) =>
-      current.map((event) =>
-        event.id === eventId ? { ...event, like: !event.like } : event,
-      ),
-    )
-  }
-
-  return (
-    <Container className="events-shell">
-      {showWelcome && (
-        <Alert variant="success" className="events-alert">
-          Hey welcome to Esprit Events
-        </Alert>
-      )}
-      {bookingMessage && (
-        <Alert variant="info" className="events-alert">
-          {bookingMessage}
-        </Alert>
-      )}
-
-      <header className="events-header">
-        <h1 className="events-title">Esprit Events</h1>
-        <p className="events-subtitle">
-          Manage, book, and like the events that matter to your clubs.
-        </p>
-      </header>
-
-      <Row className="g-4">
-        {events.map((event, index) => (
-          <Col key={event.id} xs={12} md={6} lg={4}>
-            <Event
-              event={event}
-              onBook={handleBook}
-              onToggleLike={handleToggleLike}
-              style={{ animationDelay: `${index * 0.08}s` }}
-            />
-          </Col>
-        ))}
-      </Row>
-    </Container>
-  )
+                
+                {/* Alerte de confirmation */}
+                {showAlert && (
+                    <Alert variant="success" onClose={() => setShowAlert(false)} dismissible>
+                        You have booked the event: {bookedEventName}
+                    </Alert>
+                )}
+                
+                {/* Row pour que les card soient sur la même ligne et col pour que les données d'un event soient sur la même colonne */}
+                <Row>   
+                    {events.map((event, index) => (
+                        <Col key={index} md={4}>
+                            <Event event={event}
+                             buy={() => buy(index)}
+                             toggleLike={() => toggleLike(index)} />
+                        </Col>
+                    ))}
+                </Row>
+            </div> 
+        </>
+    );
 }
