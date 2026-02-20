@@ -1,42 +1,43 @@
 import React from 'react'
-import { Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Button } from 'react-bootstrap'
+import { Link } from 'react-router-dom'
 
-export default function Event({event, buy,toggleLike}) {
-    
+export default function Event({ event, buy, toggleLike, onDelete }) {
   return (
-    <>
-    <div className="card" style={{ width: "25rem" }}>
-  <img className="card-img-top" src={event.img} alt="placeholder img"></img>
-  <div className="card-body">
-    {/* quand on click sur name il affiche les details de cet  event */}
-   <Link to={`/events/${encodeURIComponent(event.name)}`} className="card-title">
-    {event.name}
-    </Link>
-    <p className="card-text">{event.price}</p>
-    <p className="card-text">tickets available: {event.nbTickets} </p>
-    <p className="card-text">Number of participants: {event.nbParticipants}</p>
-     {event.nbTickets === 0 ? (
-                        <Button disabled className="btn btn-secondary">
-                            Sold Out
-                        </Button>
-                    ) : (
-                        <Button onClick={buy} className="btn btn-primary">
-                            Book an event
-                        </Button>
-                    )}
-{/* Bouton Like/Dislike */}
-                    <Button 
-                        onClick={toggleLike} 
-                        variant={event.like ? "danger" : "info"}
-                        className="me-2"
-                    >
-                        {event.like ? "Dislike" : "Like"}
-                    </Button>
+    <article className="event-card">
+      <img className="event-image" src={event.img || '/images/placeholder.jpg'} alt={event.name} />
+      <div className="event-body">
+        <h3 className="event-title">
+          <Link to={`/events/${event.id}`}>{event.name}</Link>
+        </h3>
+        <span className="badge-price">{event.price} DT</span>
+        <p className="event-meta">Tickets available: {event.nbTickets}</p>
+        <p className="event-meta">Participants: {event.nbParticipants}</p>
 
-                    </div>
-  </div>
+        <div className="event-actions">
+          {event.nbTickets === 0 ? (
+            <Button disabled variant="secondary">
+              Sold Out
+            </Button>
+          ) : (
+            <Button onClick={buy} variant="primary">
+              Book an event
+            </Button>
+          )}
 
-    </>
+          <Button onClick={toggleLike} variant={event.like ? 'danger' : 'info'}>
+            {event.like ? 'Dislike' : 'Like'}
+          </Button>
+
+          <Link to={`/events/${event.id}/edit`} className="btn btn-success">
+            Update
+          </Link>
+
+          <Button onClick={onDelete} variant="danger">
+            Delete
+          </Button>
+        </div>
+      </div>
+    </article>
   )
 }
